@@ -1,38 +1,17 @@
-.App {
-  text-align: center;
+.container {
+  display: flex; /* Establece el contenedor para usar Flexbox */
+  flex-direction: row; /* Alinea los elementos horizontalmente */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.column {
+  padding: 20px; /* Agrega un poco de espacio dentro de cada columna */
+  border: 1px solid #ccc; /* Opcional: añade un borde para visualizar las columnas */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.column-large {
+  flex: 2; /* Ocupa 2 fracciones del espacio disponible */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.column-small {
+  flex: 1; /* Ocupa 1 fracción del espacio disponible */
 }
