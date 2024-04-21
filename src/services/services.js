@@ -13,3 +13,17 @@ export async function getRazas() {
     .then((result) => { return result })
     .catch((error) => console.error(error));
 }
+
+export async function getClases() {
+  return fetch("http://localhost:3000/clases", requestOptions)
+    .then((response) => response.json())
+    .then((result) => { return result })
+    .catch((error) => console.error(error));
+}
+
+export async function getTransfondos() {
+  return fetch("http://localhost:3000/transfondos", requestOptions)
+    .then((response) => response.json())
+    .then((result) => { return result })
+    .catch((error) => console.error(error));
+}

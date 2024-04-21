@@ -15,3 +15,8 @@
 .column-small {
   flex: 1; /* Ocupa 1 fracción del espacio disponible */
 }
+
+.full-width {
+  width: 100%; /* Hace que cada elemento ocupe todo el ancho disponible */
+  margin-bottom: 10px; /* Añade espacio entre los elementos */
+}
