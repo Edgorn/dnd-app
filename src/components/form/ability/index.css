@@ -1,0 +1,8 @@
+.btn-default {
+  background: #818a91;
+  color: white;
+}
+
+.btn.btn-round {
+  border-radius: 50%;
+}
