@@ -1,4 +1,4 @@
-export const habilidades = {
+export const caracteristicas = {
   str: 'Fuerza',
   dex: 'Destreza',
   con: 'Constitucion',

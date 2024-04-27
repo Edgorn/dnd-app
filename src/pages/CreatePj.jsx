@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react"
-import { getClases, getRazas, getTransfondos } from "../services/services"
+import { getClases, getHabilidades, getRazas, getTransfondos } from "../services/services"
 import './CreatePj.css';
 import useCreatePj from "../hooks/useCreatePj";
-import { alineamientos, habilidades } from "../data/data";
+import { alineamientos, caracteristicas } from "../data/data";
 import Input from "../components/form/Input";
 import { Card, CardBody, Col, Row } from "reactstrap";
 import Select from "../components/form/Select";
-import Ability from "../components/form/ability";
+import Ability from "../components/form/Ability";
 import Character from "./Character";
 
 export default function CreatePj() {
   const [razas, setRazas] = useState([])
   const [clases, setClases] = useState([])
   const [transfondos, setTransfondos] = useState([])
+  const [habilidades, setHabilidades] = useState([])
 
-  const { character, subrazas, cambioClase, aumentarHabilidad, disminuirHabilidad, bonusHabilidad, cambioValor } = useCreatePj({ razas, clases })
+  const { character, subrazas, cambioClase, aumentarHabilidad, disminuirHabilidad, bonusHabilidad, cambioValor, datosHoja } = useCreatePj({ razas, clases })
 
   useEffect(() => {
     getRazas().then(response => {
@@ -27,6 +28,10 @@ export default function CreatePj() {
 
     getTransfondos().then(response => {
       setTransfondos(response)
+    })
+
+    getHabilidades().then(response => {
+      setHabilidades(response)
     })
   }, []);
 
@@ -54,7 +59,7 @@ export default function CreatePj() {
                   label='Subraza' 
                   options={subrazas} 
                   value={character?.subrace ?? ''} 
-                  onChange={(valor) => cambioValor('race', valor)} 
+                  onChange={(valor) => cambioValor('subrace', valor)} 
                   hidden={subrazas?.length === 0} />
 
                 <Select
@@ -79,13 +84,13 @@ export default function CreatePj() {
                   value={character?.alignment ?? ''} 
                   onChange={(valor) => cambioValor('alignment', valor)} />
 
-                {Object.keys(habilidades).map(habilidad => (
+                {Object.keys(caracteristicas).map(caracteristica => (
                   <Ability
-                    key={habilidad}
-                    id={habilidad}
-                    name={habilidades[habilidad]}
-                    value={character.abilityScores[habilidad] ?? 10}
-                    bonus={bonusHabilidad(habilidad)}
+                    key={caracteristica}
+                    id={caracteristica}
+                    name={caracteristicas[caracteristica]}
+                    value={character.abilityScores[caracteristica] ?? 10}
+                    bonus={bonusHabilidad(caracteristica)}
                     increase={aumentarHabilidad}
                     decrease={disminuirHabilidad} />
                 ))}
@@ -95,7 +100,7 @@ export default function CreatePj() {
           
         </Col>
         <Col className="col-8 px-3">
-          <Character character={character} clases={clases} transfondos={transfondos} razas={razas} />
+          <Character character={datosHoja()} clases={clases} transfondos={transfondos} razas={razas} habilidades={habilidades} />
         </Col>
       </Row>
     </div>

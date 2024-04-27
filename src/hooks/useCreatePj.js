@@ -10,7 +10,7 @@ function useCreatePj({ razas, clases }) {
     class: '',
     background: '',
     alignment: alineamientos[0]?.index ?? '',
-    experiencePoints: 300,
+    experiencePoints: 0,
     abilityScores: {
       str: 10,
       dex: 10,
@@ -18,8 +18,11 @@ function useCreatePj({ razas, clases }) {
       int: 10,
       wis: 10,
       cha: 10
-    }
+    },
+    prof_bonus: 0,
+    auxScores: []
   })
+  const [subrazas, setSubrazas] = useState([])
 
   useEffect(() => {
     if (razas.length > 0) {
@@ -28,6 +31,8 @@ function useCreatePj({ razas, clases }) {
         race: razas[0]?.index ?? '',
         subrace: razas[0]?.subraces[0]?.index ?? ''
       })
+      
+      setSubrazas(razas[0]?.subraces ?? []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [razas])
@@ -55,7 +60,18 @@ function useCreatePj({ razas, clases }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [character.race])
 
-  const [subrazas, setSubrazas] = useState([])
+  useEffect(() => {
+    const claseSeleccionada = clases?.find(clase => clase.index === character.class)
+
+    if (claseSeleccionada) {
+      setCharacter({
+        ...character,
+        prof_bonus: claseSeleccionada?.levels?.find(level => level.level === character.level)?.prof_bonus ?? 0
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [character.class, character.level])
+
 
   const cambioValor = (variable, valor) => {
     const characterAux = {...character}
@@ -91,7 +107,27 @@ function useCreatePj({ razas, clases }) {
     return bonusRaza + bonusSubraza
   }
 
-  return { character, subrazas, cambioClase, aumentarHabilidad, disminuirHabilidad, bonusHabilidad, cambioValor }
+  const datosHoja = () => {
+    const abilityScores = character.abilityScores
+    const clase = clases.find(clase => clase.index === character.class)
+
+    const datos = {
+      ...character,
+      abilityScores: {
+        str: abilityScores['str'] + bonusHabilidad('str'),
+        dex: abilityScores['dex'] + bonusHabilidad('dex'),
+        con: abilityScores['con'] + bonusHabilidad('con'),
+        int: abilityScores['int'] + bonusHabilidad('int'),
+        wis: abilityScores['wis'] + bonusHabilidad('wis'),
+        cha: abilityScores['cha'] + bonusHabilidad('cha')
+      },
+      saving_throws: clase?.saving_throws ?? []
+    }
+
+    return datos
+  }
+
+  return { character, subrazas, cambioClase, aumentarHabilidad, disminuirHabilidad, bonusHabilidad, cambioValor, datosHoja }
 }
 
 export default useCreatePj

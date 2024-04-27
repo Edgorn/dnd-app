@@ -27,3 +27,10 @@ export async function getTransfondos() {
     .then((result) => { return result })
     .catch((error) => console.error(error));
 }
+
+export async function getHabilidades() {
+  return fetch("http://localhost:3000/habilidades", requestOptions)
+    .then((response) => response.json())
+    .then((result) => { return result })
+    .catch((error) => console.error(error));
+}
