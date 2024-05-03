@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader } from "reactstrap";
-import CheckBox from "../../../components/form/CheckBox";
 import { caracteristicas } from "../../../data/data";
+import Radio from "../../../components/form/Radio";
 
 export default function Skills({ character, habilidades }) {
   const valorHabilidad = (value) => {
@@ -19,7 +19,7 @@ export default function Skills({ character, habilidades }) {
       <CardBody>
         {habilidades.map(habilidad => {
           return (
-            <CheckBox
+            <Radio
               label={valorHabilidad(character.abilityScores[habilidad.ability_score]) + ' ' + habilidad.name + ' (' + caracteristicas[habilidad.ability_score] + ')'}
               checked={false}
               disabled />

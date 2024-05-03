@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { alineamientos } from "../data/data";
 
-function useCreatePj({ razas, clases }) {
+function useCreatePj({ razas, clases, transfondos }) {
   const [character, setCharacter] = useState({
     name: '',
     race: '',
@@ -23,6 +23,12 @@ function useCreatePj({ razas, clases }) {
     auxScores: []
   })
   const [subrazas, setSubrazas] = useState([])
+  const [proficiencyRace, setProficiencyRace] = useState([])
+  const [proficiencyOptionsRace, setProficiencyOptionsRace] = useState([])
+  const [proficiencySubrace, setProficiencySubrace] = useState([])
+  const [proficiencyOptionsSubrace, setProficiencyOptionsSubrace] = useState([])
+  const [proficiencyOptionsClass, setProficiencyOptionsClass] = useState([])
+  const [proficiencyBackground, setProficiencyBackground] = useState([])
 
   useEffect(() => {
     if (razas.length > 0) {
@@ -51,14 +57,32 @@ function useCreatePj({ razas, clases }) {
     const razaSeleccionada = razas?.find(raza => raza.index === character.race)
 
     if (razaSeleccionada) {
+      const subrazaSeleccionada = razaSeleccionada?.subraces[0]
       setSubrazas(razaSeleccionada?.subraces ?? []);
       setCharacter({
         ...character,
-        subrace: razaSeleccionada?.subraces[0]?.index ?? ''
+        subrace: subrazaSeleccionada?.index ?? ''
       })
+
+      setProficiencyRace(razaSeleccionada.starting_proficiencies ?? [])
+      setProficiencyOptionsRace(razaSeleccionada?.starting_proficiency_options ?? undefined)
+
+      setProficiencySubrace(subrazaSeleccionada?.starting_proficiencies ?? [])
+      setProficiencyOptionsSubrace(subrazaSeleccionada?.starting_proficiency_options ?? undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [character.race])
+
+  useEffect(() => {
+    const razaSeleccionada = razas?.find(raza => raza.index === character.race)
+
+    if (razaSeleccionada) {
+      const subrazaSeleccionada = razaSeleccionada?.subraces.find(raza => raza.index === character.subrace)
+      setProficiencySubrace(subrazaSeleccionada?.starting_proficiencies ?? [])
+      setProficiencyOptionsSubrace(subrazaSeleccionada?.starting_proficiency_options ?? undefined)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [character.subrace])
 
   useEffect(() => {
     const claseSeleccionada = clases?.find(clase => clase.index === character.class)
@@ -68,9 +92,17 @@ function useCreatePj({ razas, clases }) {
         ...character,
         prof_bonus: claseSeleccionada?.levels?.find(level => level.level === character.level)?.prof_bonus ?? 0
       })
+
+      setProficiencyOptionsClass(claseSeleccionada?.proficiency_options ?? [])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [character.class, character.level])
+
+  useEffect(() => {
+    const transfondo = transfondos.find(trans => trans.index === character.background)
+
+    setProficiencyBackground(transfondo?.starting_proficiencies ?? [])
+  }, [character.background])
 
 
   const cambioValor = (variable, valor) => {
@@ -81,8 +113,8 @@ function useCreatePj({ razas, clases }) {
   }
 
   const cambioClase = (valor) => {
-    const claseSeleccionado = clases.find(clase => clase.index === valor)
-    setCharacter({...character, class: claseSeleccionado?.index ?? ''})
+    const claseSeleccionada = clases.find(clase => clase.index === valor)
+    setCharacter({...character, class: claseSeleccionada?.index ?? ''})
   };
 
   const aumentarHabilidad = (habilidad) => {
@@ -127,7 +159,10 @@ function useCreatePj({ razas, clases }) {
     return datos
   }
 
-  return { character, subrazas, cambioClase, aumentarHabilidad, disminuirHabilidad, bonusHabilidad, cambioValor, datosHoja }
+  return { 
+    character, subrazas, proficiencyOptionsClass, proficiencyRace, proficiencyOptionsRace, proficiencySubrace, proficiencyOptionsSubrace, proficiencyBackground,
+    cambioClase, aumentarHabilidad, disminuirHabilidad, bonusHabilidad, cambioValor, datosHoja 
+  }
 }
 
 export default useCreatePj

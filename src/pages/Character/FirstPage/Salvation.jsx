@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader } from "reactstrap";
 import { caracteristicas } from "../../../data/data";
-import CheckBox from "../../../components/form/CheckBox";
+import Radio from "../../../components/form/Radio";
 
 export default function Salvation({ character }) {
   const valorHabilidad = (value) => {
@@ -17,9 +17,10 @@ export default function Salvation({ character }) {
         Tiradas de salvacion
       </CardHeader>
       <CardBody>
-        {Object.keys(caracteristicas).map(habilidad => {
+        {Object.keys(caracteristicas).map((habilidad, index) => {
           return (
-            <CheckBox
+            <Radio
+              key={index}
               label={valorHabilidad(character.abilityScores[habilidad]) + ' ' + caracteristicas[habilidad]}
               checked={character.saving_throws.includes(habilidad)}
               disabled />
