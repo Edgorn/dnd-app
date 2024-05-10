@@ -1,4 +1,4 @@
-export default function Select({ id, label, options, value, onChange, hidden, nullable }) {
+export default function Select({ id, label, options, value, onChange, hidden, nullable, defaultValue }) {
   return (
     <div className='mb-3' hidden={hidden}>
       <label className='form-label' for={id}>
@@ -11,6 +11,7 @@ export default function Select({ id, label, options, value, onChange, hidden, nu
         className='form-select'
         type="select"
         value={value}
+        defaultValue={defaultValue}
         onChange={(e) => onChange(e.target.value)}
       >
         { nullable && <option key='-' value=''> - </option> }

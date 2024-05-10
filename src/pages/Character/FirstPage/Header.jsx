@@ -5,7 +5,7 @@ import InputText from "../../../components/form/Input";
 export default function Header({character, clases, transfondos, razas}) {
   const nombreClase = () => {
     const clase = clases?.find(clase => clase.index === character.class)
-    return clase?.name ?? character?.class
+    return clase?.name ?? character?.class ?? ''
   }
 
   const nombreTransfondo = () => {

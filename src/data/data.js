@@ -8,15 +8,15 @@ export const caracteristicas = {
 }
 
 export const alineamientos = [
-  {"index":"chaotic-evil","name":"Caótico malvado"},
-  {"index":"chaotic-good","name":"Caótico bueno"},
-  {"index":"chaotic-neutral","name":"Caótico neutral"},
-  {"index":"lawful-evil","name":"Legal malvado"},
   {"index":"lawful-good","name":"Legal bueno"},
   {"index":"lawful-neutral","name":"Legal neutral"},
+  {"index":"lawful-evil","name":"Legal malvado"},
+  {"index":"neutral-good","name":"Neutral bueno"},
   {"index":"neutral","name":"Neutral"},
   {"index":"neutral-evil","name":"Neutral malvado"},
-  {"index":"neutral-good","name":"Neutral bueno"}
+  {"index":"chaotic-good","name":"Caótico bueno"},
+  {"index":"chaotic-neutral","name":"Caótico neutral"},
+  {"index":"chaotic-evil","name":"Caótico malvado"},
 ]
 
 

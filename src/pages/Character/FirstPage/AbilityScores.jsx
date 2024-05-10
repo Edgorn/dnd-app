@@ -1,7 +1,7 @@
 import { Card, CardBody, CardFooter, CardHeader } from "reactstrap";
 import { caracteristicas } from "../../../data/data";
 
-export default function AbilityScores({ abilities }) {
+export default function AbilityScores({ abilities, bonus }) {
   const tableStyle = {
     width: "100%", // Hace que la tabla use todo el ancho disponible
     tableLayout: "fixed", // Fuerza a que las celdas tengan un ancho uniforme
@@ -28,10 +28,10 @@ export default function AbilityScores({ abilities }) {
                     {caracteristicas[ability]}
                   </CardHeader>
                   <CardBody>
-                    {abilities[ability]}
+                    {valorHabilidad(abilities[ability] + (bonus[ability] ?? 0))}
                   </CardBody>
                   <CardFooter>
-                    {valorHabilidad(abilities[ability])}
+                    {abilities[ability] + (bonus[ability] ?? 0)}
                   </CardFooter>
                 </Card>
               </td></tr>
