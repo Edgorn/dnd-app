@@ -5,14 +5,16 @@ import InputText from "../../components/form/Input";
 import Salvation from "./FirstPage/Salvation";
 import Skills from "./FirstPage/Skills";
 import { useEffect, useState } from "react";
-import { getClases, getRazas, getTransfondos } from "../../services/services";
+import { getClases, getIdiomas, getRazas, getTransfondos } from "../../services/services";
 import Profiencies from "./FirstPage/Proficiencies";
+import { caracteristicas } from "../../data/data";
 
 export default function Character({ character, habilidades }) {
 
   const [razas, setRazas] = useState([])
   const [clases, setClases] = useState([])
   const [transfondos, setTransfondos] = useState([])
+  const [idiomas, setIdiomas] = useState([])
   
   const tableStyle = {
     width: "100%",
@@ -31,6 +33,10 @@ export default function Character({ character, habilidades }) {
     getTransfondos().then(response => {
       setTransfondos(response)
     })
+
+    getIdiomas().then(response => {
+      setIdiomas(response)
+    })
   }, [])
 
   const pasiva = (caracteristica) => {
@@ -38,6 +44,18 @@ export default function Character({ character, habilidades }) {
     const bonus = character?.ability_bonuses[caracteristica] ?? 0
 
     return Math.floor((base + bonus)/2 - 5) + 10
+  }
+
+  const nombreCompetencia = (index, type) => {
+    if (type === 'skill') {
+      return habilidades.find(habilidad => habilidad.index === index)?.name ?? index
+    } else if (type === 'ability') {
+      return caracteristicas[index] ?? index
+    } else if (type === 'language') {
+      return idiomas.find(idioma => idioma.index === index)?.name ?? index
+    }
+
+    return index
   }
 
   return (
@@ -84,7 +102,7 @@ export default function Character({ character, habilidades }) {
             </tr>
             <tr>
               <td rowSpan='3'>
-                <Profiencies />
+                <Profiencies character={character} nombreCompetencia={nombreCompetencia} />
               </td>
             </tr>
           </tbody>

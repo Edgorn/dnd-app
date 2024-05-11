@@ -18,11 +18,12 @@ export default function Salvation({ character }) {
       </CardHeader>
       <CardBody>
         {Object.keys(caracteristicas).map((habilidad, index) => {
+          const competencia = character?.saving_throws?.includes(habilidad)
           return (
             <Radio
               key={index}
-              label={valorHabilidad(character.ability_scores_base[habilidad] + (character.ability_bonuses[habilidad] ?? 0)) + ' ' + caracteristicas[habilidad]}
-              checked={character?.saving_throws?.includes(habilidad)}
+              label={valorHabilidad(character.ability_scores_base[habilidad] + (character.ability_bonuses[habilidad] ?? 0) + character.prof_bonus*competencia*2) + ' ' + caracteristicas[habilidad]}
+              checked={competencia}
               disabled />
           )
         })}

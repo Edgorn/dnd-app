@@ -18,6 +18,7 @@ function useCreatePj() {
     },
     ability_bonuses: {},
     skills: [],
+    languages: [],
     prof_bonus: 0,
     background: ''
   })
@@ -28,6 +29,10 @@ function useCreatePj() {
     Object.keys(data).forEach(key => {
       if (key === 'skills') {
         characterAux[key] = characterAux[key].concat(data[key])
+        characterAux[key] = [...new Set(characterAux[key])];
+      } else if (key === 'languages') {
+        characterAux[key] = characterAux[key].concat(data[key])
+        characterAux[key] = [...new Set(characterAux[key])];
       } else {
         characterAux[key] = data[key]
       }

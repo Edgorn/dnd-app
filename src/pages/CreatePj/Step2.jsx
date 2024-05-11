@@ -67,9 +67,10 @@ export default function Step2({ character, cambiarStep, anteriorStep, nombreComp
       }
     })
 
+    const languages = [...raza?.languages]
+
     Object.keys(checkboxes).forEach(check => {
       const values = check.split('_')
-
       if (values[0] === 'ability') {
         if (ability_bonuses[values[1]]) {
           ability_bonuses[values[1]] += 1
@@ -78,6 +79,8 @@ export default function Step2({ character, cambiarStep, anteriorStep, nombreComp
         }
       } else if (values[0] === 'skill') {
         skills.push(values[1])
+      } else if (values[0] === 'language') {
+        languages.push(values[1])
       }
     })
 
@@ -85,6 +88,7 @@ export default function Step2({ character, cambiarStep, anteriorStep, nombreComp
       race: raza.index,
       ability_bonuses,
       skills,
+      languages,
       subrace: subraza?.index ?? ''
     })
   }
@@ -107,7 +111,7 @@ export default function Step2({ character, cambiarStep, anteriorStep, nombreComp
       <br/>
 
       {
-        raza?.starting_proficiencies
+        raza?.starting_proficiencies?.length > 0
         &&
         'Competencias: ' +  raza?.starting_proficiencies?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')
       }
@@ -115,7 +119,13 @@ export default function Step2({ character, cambiarStep, anteriorStep, nombreComp
       <br/>
 
       {
-        raza?.starting_proficiency_options?.map((proficiency_options, index) =>
+        'Idiomas: ' +  raza?.languages?.map(language => nombreCompetencia(language, 'language')).join(', ')
+      }
+
+      <br/>
+
+      {
+        raza?.options?.map((proficiency_options, index) =>
           <RadioGroup
             key={index}
             datos={proficiency_options}
@@ -141,7 +151,7 @@ export default function Step2({ character, cambiarStep, anteriorStep, nombreComp
       <br/>
 
       {
-        subraza?.starting_proficiencies
+        subraza?.starting_proficiencies?.length > 0
         &&
         'Competencias: ' +  subraza?.starting_proficiencies?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')
       }

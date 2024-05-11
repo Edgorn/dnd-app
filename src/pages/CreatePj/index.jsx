@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getHabilidades } from "../../services/services"
+import { getHabilidades, getIdiomas } from "../../services/services"
 import useCreatePj from "../../hooks/useCreatePj";
 import { caracteristicas } from "../../data/data";
 import { Card, CardBody, Col, Row } from "reactstrap";
@@ -12,6 +12,7 @@ import Step5 from "./Step5";
 
 export default function CreatePj() {
   const [habilidades, setHabilidades] = useState([])
+  const [idiomas, setIdiomas] = useState([])
 
   const [step, setStep] = useState(0)
 
@@ -21,6 +22,10 @@ export default function CreatePj() {
     getHabilidades().then(response => {
       setHabilidades(response)
     })
+
+    getIdiomas().then(response => {
+      setIdiomas(response)
+    })
   }, []);
 
   const nombreCompetencia = (index, type) => {
@@ -28,6 +33,8 @@ export default function CreatePj() {
       return habilidades.find(habilidad => habilidad.index === index)?.name ?? index
     } else if (type === 'ability') {
       return caracteristicas[index] ?? index
+    } else if (type === 'language') {
+      return idiomas.find(idioma => idioma.index === index)?.name ?? index
     }
 
     return index

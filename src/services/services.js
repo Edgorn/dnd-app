@@ -34,3 +34,10 @@ export async function getHabilidades() {
     .then((result) => { return result })
     .catch((error) => console.error(error));
 }
+
+export async function getIdiomas() {
+  return fetch("http://localhost:3000/idiomas", requestOptions)
+    .then((response) => response.json())
+    .then((result) => { return result })
+    .catch((error) => console.error(error));
+}
