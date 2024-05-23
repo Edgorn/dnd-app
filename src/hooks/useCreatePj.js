@@ -5,9 +5,19 @@ function useCreatePj() {
     level: 1,
     experiencePoints: 0,
     name: '',
+    playerName: 'Edgar Maronda Carrion',
+    appearance: {
+      age: 0,
+      height: 0,
+      weight: 0,
+      eyes: '',
+      skin: '',
+      heir: ''
+    },
     alignment: '',
     race: '',
     subrace: '',
+    type: '',
     ability_scores_base: {
       str: 10,
       dex: 10,
@@ -19,24 +29,34 @@ function useCreatePj() {
     ability_bonuses: {},
     skills: [],
     languages: [],
+    proficiencies: [],
     prof_bonus: 0,
-    background: ''
+    background: '',
+    raceData: { },
+    classData: { },
+    backgroundData: { }
   })
 
   const addData = (data) => {
     const characterAux = { ...character }
 
     Object.keys(data).forEach(key => {
-      if (key === 'skills') {
-        characterAux[key] = characterAux[key].concat(data[key])
-        characterAux[key] = [...new Set(characterAux[key])];
-      } else if (key === 'languages') {
-        characterAux[key] = characterAux[key].concat(data[key])
-        characterAux[key] = [...new Set(characterAux[key])];
-      } else {
-        characterAux[key] = data[key]
-      }
+      characterAux[key] = data[key]
     })
+
+    calcularDatos(characterAux)
+  }
+
+  const calcularDatos = (characterAux) => {
+    
+    const skills = [...characterAux?.raceData?.skills ?? [], ...characterAux?.classData?.skills ?? [], ...characterAux?.backgroundData?.skills ?? []]
+    characterAux.skills = skills
+    
+    const languages = [...characterAux?.raceData?.languages ?? [], ...characterAux?.classData?.languages ?? [], ...characterAux?.backgroundData?.languages ?? []]
+    characterAux.languages = languages
+
+    const proficiencies = [...characterAux?.raceData?.proficiencies ?? [], ...characterAux?.classData?.proficiencies ?? [], ...characterAux?.backgroundData?.proficiencies ?? []]
+    characterAux.proficiencies = proficiencies
 
     setCharacter(characterAux)
   }

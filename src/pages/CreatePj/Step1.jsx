@@ -1,4 +1,4 @@
-import { Button, Form } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Form } from "reactstrap";
 import Input from "../../components/form/Input";
 import Select from "../../components/form/Select";
 import { alineamientos } from "../../data/data";
@@ -13,27 +13,36 @@ export default function Step1({ character, cambiarStep }) {
     const name = formData.get('name');
     const alignment = formData.get('alignment');
 
-    cambiarStep({ name, alignment })
+    if (name && alignment) {
+      cambiarStep({ name, alignment })
+    }
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Input
-        id='name'
-        label='Nombre del personaje'
-        defaultValue={character?.name ?? ''}
-        onChange={() => {}} />
+      <Card>
+        <CardHeader>
+          Nombre
+        </CardHeader>
+        <CardBody>
+          <Form onSubmit={handleSubmit}>
+            <Input
+              id='name'
+              label='Nombre del personaje'
+              defaultValue={character?.name ?? ''}
+              onChange={() => {}} />
 
-      <Select
-        id='alignment' 
-        label='Alineamiento' 
-        options={alineamientos} 
-        defaultValue={character?.alignment ?? ''} 
-        onChange={() => {}} />
+            <Select
+              id='alignment' 
+              label='Alineamiento' 
+              options={alineamientos} 
+              defaultValue={character?.alignment ?? ''} 
+              onChange={() => {}} />
 
-      <Button color='primary'>
-        Siguiente
-      </Button>
-    </Form>
+            <Button color='primary'>
+              Siguiente
+            </Button>
+          </Form>
+        </CardBody>
+      </Card>
   )
 }

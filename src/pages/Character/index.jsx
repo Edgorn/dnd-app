@@ -5,7 +5,7 @@ import InputText from "../../components/form/Input";
 import Salvation from "./FirstPage/Salvation";
 import Skills from "./FirstPage/Skills";
 import { useEffect, useState } from "react";
-import { getClases, getIdiomas, getRazas, getTransfondos } from "../../services/services";
+import { getClases, getCompetencias, getIdiomas, getRazas, getTransfondos } from "../../services/services";
 import Profiencies from "./FirstPage/Proficiencies";
 import { caracteristicas } from "../../data/data";
 
@@ -15,6 +15,7 @@ export default function Character({ character, habilidades }) {
   const [clases, setClases] = useState([])
   const [transfondos, setTransfondos] = useState([])
   const [idiomas, setIdiomas] = useState([])
+  const [competencias, setCompetencias] = useState([])
   
   const tableStyle = {
     width: "100%",
@@ -37,6 +38,10 @@ export default function Character({ character, habilidades }) {
     getIdiomas().then(response => {
       setIdiomas(response)
     })
+
+    getCompetencias().then(response => {
+      setCompetencias(response)
+    })
   }, [])
 
   const pasiva = (caracteristica) => {
@@ -53,6 +58,8 @@ export default function Character({ character, habilidades }) {
       return caracteristicas[index] ?? index
     } else if (type === 'language') {
       return idiomas.find(idioma => idioma.index === index)?.name ?? index
+    } else if (type === 'reference') {
+      return competencias.find(competencia => competencia.index === index)?.name ?? index
     }
 
     return index
@@ -72,6 +79,9 @@ export default function Character({ character, habilidades }) {
               </td>
               <td colSpan="2">
                 <InputText label='Inspiracion' value={Math.floor(character?.ability_scores_base?.dex/2 - 5)} disabled />
+              </td>
+              <td colSpan="3">
+                asd
               </td>
             </tr>
             <tr>
@@ -100,8 +110,9 @@ export default function Character({ character, habilidades }) {
                 <InputText label='Inspiracion' value={pasiva('wis')} disabled />
               </td>
             </tr>
+            <tr></tr>
             <tr>
-              <td rowSpan='3'>
+              <td rowSpan='3' colSpan='3'>
                 <Profiencies character={character} nombreCompetencia={nombreCompetencia} />
               </td>
             </tr>

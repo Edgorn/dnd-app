@@ -3,11 +3,20 @@ import Select from "../../components/form/Select";
 import { useEffect, useState } from "react";
 import { getTransfondos } from "../../services/services";
 import RadioGroup from "../../components/form/RadioGroup";
+import TextoCompetencias from "../../components/form/TextoCompetencias";
 
 export default function Step4({ character, cambiarStep, anteriorStep, nombreCompetencia }) {
   
   const [transfondos, setTransfondos] = useState([])
   const [transfondo, setTransfondo] = useState([])
+
+  const disableds = [
+    ...character?.raceData?.skills ?? [],
+    ...character?.raceData?.proficiencies ?? [],
+    ...character?.raceData?.languages ?? [],
+    ...character?.classData?.skills ?? [],
+    ...character?.classData?.proficiencies ?? []
+  ]
 
   useEffect(() => {
     getTransfondos().then(response => {
@@ -25,10 +34,13 @@ export default function Step4({ character, cambiarStep, anteriorStep, nombreComp
 
     const skills = []
     const languages = []
+    const proficiencies = []
 
     transfondo?.starting_proficiencies?.forEach(proficiency => {
       if (proficiency.type === 'skill') {
         skills.push(proficiency.index)
+      } else if (proficiency.type === 'reference') {
+        proficiencies.push(proficiency.index)
       }
     })
     
@@ -46,13 +58,18 @@ export default function Step4({ character, cambiarStep, anteriorStep, nombreComp
       const values = check.split('_')
       if (values[0] === 'language') {
         languages.push(values[1])
+      } else if (values[0] === 'reference') {
+        proficiencies.push(values[1])
       }
     })
 
     cambiarStep({
       background: transfondo.index,
-      skills,
-      languages
+      backgroundData: {
+        skills,
+        languages,
+        proficiencies
+      }
     })
   }
 
@@ -66,20 +83,17 @@ export default function Step4({ character, cambiarStep, anteriorStep, nombreComp
         onChange={seleccionarTransfondo}
         nullable />
 
-      {
-        transfondo?.starting_proficiencies
-        &&
-        'Competencias: ' +  transfondo?.starting_proficiencies?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')
-      }
+      <ul>
+        <TextoCompetencias competencias={transfondo?.starting_proficiencies} nombreCompetencia={nombreCompetencia} />
+      </ul>
 
-      <br/>
       {
         transfondo?.options?.map((options, index) =>
           <RadioGroup
             key={index}
             datos={options}
             nombreCompetencia={nombreCompetencia}
-            disableds={character?.languages} />
+            disableds={disableds} />
         )
       }
 

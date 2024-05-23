@@ -7,6 +7,14 @@ export default function Profiencies({ character, nombreCompetencia }) {
         Otras competencias e idiomas
       </CardHeader>
       <CardBody>
+        <p>Competencias:</p>
+        <List>
+          {
+            character.proficiencies.map((language, index) => 
+              <li key={index}>{nombreCompetencia(language, 'reference')}</li>
+            )
+          }
+        </List>
         <p>Idiomas:</p>
         <List>
           {

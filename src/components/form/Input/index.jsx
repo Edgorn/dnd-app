@@ -1,10 +1,10 @@
-export default function InputText({ id, label, value, onChange, disabled, defaultValue }) {
+export default function InputText({ id, label, value, onChange, disabled, defaultValue, type='text' }) {
   return (
     <div className='form-floating mb-3'>
       <input
         id={id}
         name={id} 
-        type="text" 
+        type={type} 
         className='form-control'
         placeholder={label}
         value={value}

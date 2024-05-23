@@ -3,10 +3,17 @@ import Select from "../../components/form/Select";
 import { useEffect, useState } from "react";
 import { getClases } from "../../services/services";
 import RadioGroup from "../../components/form/RadioGroup";
+import RadioGroupGroup from "../../components/form/RadioGroupGroup";
+import TextoCompetencias from "../../components/form/TextoCompetencias";
 
 export default function Step3({ character, cambiarStep, anteriorStep, nombreCompetencia }) {
   const [clase, setClase] = useState([])
   const [clases, setClases] = useState([])
+
+  const disableds = [
+    ...character?.raceData?.skills ?? [],
+    ...character?.raceData?.proficiencies ?? []
+  ]
 
   useEffect(() => {
     getClases().then(response => {
@@ -33,20 +40,31 @@ export default function Step3({ character, cambiarStep, anteriorStep, nombreComp
     }
     
     const skills = []
+    const proficiencies = []
 
     Object.keys(checkboxes).forEach(check => {
       const values = check.split('_')
 
       if (values[0] === 'skill') {
         skills.push(values[1])
+      } else if (values[0] === 'reference') {
+        proficiencies.push(values[1])
       }
+    })
+
+
+    clase?.starting_proficiencies?.forEach(proficiency => {
+      proficiencies.push(proficiency.index)
     })
 
     cambiarStep({
       class: clase.index,
       saving_throws: clase.saving_throws,
-      skills,
-      prof_bonus: clase?.levels[0]?.prof_bonus
+      prof_bonus: clase?.levels[0]?.prof_bonus,
+      classData: {
+        skills,
+        proficiencies
+      }
     })
   }
 
@@ -59,19 +77,27 @@ export default function Step3({ character, cambiarStep, anteriorStep, nombreComp
         value={clase?.index ?? ''} 
         onChange={seleccionarClase} />
 
-      <br/>
+      <ul>
+        <TextoCompetencias competencias={clase?.starting_proficiencies} nombreCompetencia={nombreCompetencia} />
+      </ul>
 
       {
-        clase?.proficiency_options?.map((proficiency_options, index) =>
+        clase?.options?.map((proficiency_options, index) =>
+          proficiency_options.type === 'choice'
+          ?
+          <RadioGroupGroup
+            key={index}
+            datos={proficiency_options}
+            nombreCompetencia={nombreCompetencia}
+            disableds={disableds} />
+          :
           <RadioGroup
             key={index}
             datos={proficiency_options}
             nombreCompetencia={nombreCompetencia}
-            disableds={character?.skills} />
+            disableds={disableds} />
         )
       }
-
-      <br/>
 
       <Button color='secondary' onClick={anteriorStep}>
         Anterior

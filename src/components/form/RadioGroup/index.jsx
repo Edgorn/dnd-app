@@ -1,5 +1,6 @@
 import { useState } from "react";
 import CheckBox from "../CheckBox";
+import { caracteristicas } from "../../../data/data";
 
 export default function RadioGroup({ datos, nombreCompetencia, disableds }) {
   const [options, setOptions] = useState([])
@@ -7,7 +8,7 @@ export default function RadioGroup({ datos, nombreCompetencia, disableds }) {
   const handleChange = (event) => {
     const { name } = event.target;
 
-    const datosAux = datos.options.map(o => o.type + '_' + o.index)
+    const datosAux = datos.options.map(o => datos.type + '_' + o)
     let optionsAux = [...options.filter(opt => datosAux.includes(opt))]
     const actualOption = optionsAux.find(option => option === name)
 
@@ -21,17 +22,19 @@ export default function RadioGroup({ datos, nombreCompetencia, disableds }) {
 
     setOptions(optionsAux)
   };
+
+  const arrayNombre = datos?.type?.split('_') 
   
   return (
     <div>
-      <p>Elige {datos?.choose} de entre estas opciones:</p>
+      <p>Elige {datos?.choose} {arrayNombre[1] ? arrayNombre[0] + ' (' + caracteristicas[arrayNombre[1]] + ')' : datos?.type} de entre estas opciones:</p>
       {
         datos?.options
           ?.sort((a, b) => {
-            if (nombreCompetencia(a.index, a.type) < nombreCompetencia(b.index, b.type)) {
+            if (nombreCompetencia(a, datos.type) < nombreCompetencia(b, datos.type)) {
               return -1;
             }
-            if (nombreCompetencia(a.index, a.type) > nombreCompetencia(b.index, b.type)) {
+            if (nombreCompetencia(a, datos.type) > nombreCompetencia(b, datos.type)) {
               return 1;
             }
             return 0;
@@ -39,11 +42,11 @@ export default function RadioGroup({ datos, nombreCompetencia, disableds }) {
           ?.map((option, index) => 
             <CheckBox 
               key={index}
-              label={nombreCompetencia(option.index, option.type)}
-              name={option.type + '_' + option.index}
+              label={nombreCompetencia(option, datos.type)}
+              name={datos.type + '_' + option}
               onChange={handleChange}
-              checked={!!options.find(o => o === option.type + '_' + option.index)}
-              disabled={disableds.includes(option.index) && !options.includes(option.index)} />
+              checked={!!options.find(o => o === datos.type + '_' + option)}
+              disabled={disableds.includes(option) && !options.includes(option)} />
           )
       }
     </div>
