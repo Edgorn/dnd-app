@@ -1,4 +1,4 @@
-export default function TextoCompetencias({competencias, nombreCompetencia}) {
+export default function TextoCompetencias({competencias}) {
 
   return (
     <>
@@ -6,38 +6,40 @@ export default function TextoCompetencias({competencias, nombreCompetencia}) {
         competencias?.filter(prof => prof.type === 'habilidad')?.length > 0
         &&
         <li>
-          {'Competencias con habilidades: ' +  competencias?.filter(prof => prof.type === 'habilidad')?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')}
+          <b>Competencias con habilidades: </b>{competencias?.filter(prof => prof.type === 'habilidad')?.map(prof => prof.name).join(', ')}.
         </li>
       }
 
       {
-        competencias?.filter(prof => prof.type === 'arma')?.length > 0
+        competencias?.filter(prof => prof.type === 'Armas')?.length > 0
         &&
-        <li>{'Competencias con armas: ' +  competencias?.filter(prof => prof.type === 'arma')?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')}</li>
+        <li> 
+          <b>Competencias con armas: </b>{competencias?.filter(prof => prof.type === 'Armas')?.map(prof => prof.name).join(', ')}.
+        </li>
       }
 
       {
-        competencias?.filter(prof => prof.type === 'armadura')?.length > 0
+        competencias?.filter(prof => prof.type === 'Armaduras')?.length > 0
         &&
-        <li>{'Competencias con armaduras: ' +  competencias?.filter(prof => prof.type === 'armadura')?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')}</li>
+        <li>
+          <b>Competencias con armaduras: </b>{competencias?.filter(prof => prof.type === 'Armaduras')?.map(prof => prof.name).join(', ')}.
+        </li>
       }
 
       {
-        competencias?.filter(prof => prof.type === 'herramienta')?.length > 0
+        competencias?.filter(prof => prof.type === 'Herramientas de artesano')?.length > 0
         &&
-        <li>{'Competencias con herramientas: ' +  competencias?.filter(prof => prof.type === 'herramienta')?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')}</li>
+        <li>
+          <b>Competencias con herramientas: </b>{competencias?.filter(prof => prof.type === 'Herramientas de artesano')?.map(prof => prof.name).join(', ')}.
+        </li>
       }
 
-      {
-        competencias?.filter(prof => prof.type === 'vehiculo')?.length > 0
-        &&
-        <li>{'Competencias con vehiculos: ' +  competencias?.filter(prof => prof.type === 'vehiculo')?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')}</li>
-      }
+      
 
       {
-        competencias?.filter(prof => prof.type !== 'habilidad' && prof.type !== 'arma' && prof.type !== 'armadura' && prof.type !== 'herramienta' && prof.type !== 'vehiculo')?.length > 0
+        competencias?.filter(prof => prof.type !== 'habilidad' && prof.type !== 'Armas' && prof.type !== 'Armaduras' && prof.type !== 'Herramientas de artesano')?.length > 0
         &&
-        <li>{'OTRO: ' +  competencias?.filter(prof => prof.type !== 'habilidad' && prof.type !== 'arma' && prof.type !== 'armadura' && prof.type !== 'herramienta' && prof.type !== 'vehiculo')?.map(prof => nombreCompetencia(prof.index, prof.type)).join(', ')}</li>
+        <li>{'OTRO: ' +  competencias?.filter(prof => prof.type !== 'habilidad' && prof.type !== 'Armas' && prof.type !== 'Armaduras' && prof.type !== 'Herramientas de artesano')?.map(prof => prof.index).join(', ')}.</li>
       }
 
     </>

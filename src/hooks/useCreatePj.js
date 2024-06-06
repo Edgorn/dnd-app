@@ -4,7 +4,7 @@ function useCreatePj() {
   const [character, setCharacter] = useState({
     level: 1,
     experiencePoints: 0,
-    name: '',
+    name: 'David Bisbal',
     playerName: 'Edgar Maronda Carrion',
     appearance: {
       age: 0,
@@ -30,8 +30,10 @@ function useCreatePj() {
     skills: [],
     languages: [],
     proficiencies: [],
+    spells: [],
     prof_bonus: 0,
     background: '',
+    money: 0,
     raceData: { },
     classData: { },
     backgroundData: { }
@@ -57,6 +59,12 @@ function useCreatePj() {
 
     const proficiencies = [...characterAux?.raceData?.proficiencies ?? [], ...characterAux?.classData?.proficiencies ?? [], ...characterAux?.backgroundData?.proficiencies ?? []]
     characterAux.proficiencies = proficiencies
+    
+    const spells = [...characterAux?.raceData?.spells ?? [], ...characterAux?.classData?.spells ?? [], ...characterAux?.backgroundData?.spells ?? []]
+    characterAux.spells = spells
+
+    const money = characterAux?.classData?.money
+    characterAux.money = money
 
     setCharacter(characterAux)
   }

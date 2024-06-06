@@ -30,23 +30,14 @@ export default function RadioGroup({ datos, nombreCompetencia, disableds }) {
       <p>Elige {datos?.choose} {arrayNombre[1] ? arrayNombre[0] + ' (' + caracteristicas[arrayNombre[1]] + ')' : datos?.type} de entre estas opciones:</p>
       {
         datos?.options
-          ?.sort((a, b) => {
-            if (nombreCompetencia(a, datos.type) < nombreCompetencia(b, datos.type)) {
-              return -1;
-            }
-            if (nombreCompetencia(a, datos.type) > nombreCompetencia(b, datos.type)) {
-              return 1;
-            }
-            return 0;
-          })
           ?.map((option, index) => 
             <CheckBox 
               key={index}
-              label={nombreCompetencia(option, datos.type)}
-              name={datos.type + '_' + option}
+              label={option.name}
+              name={datos.type + '_' + option.index}
               onChange={handleChange}
-              checked={!!options.find(o => o === datos.type + '_' + option)}
-              disabled={disableds.includes(option) && !options.includes(option)} />
+              checked={!!options.find(o => o === datos.type + '_' + option.index)}
+              disabled={disableds.includes(option.index) && !options.includes(option.index)} />
           )
       }
     </div>

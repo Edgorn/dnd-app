@@ -59,6 +59,42 @@ export async function getConjuros() {
 }
 
 export async function rellenarFicha(character) {
+  const { 
+    playerName,
+    name,
+    level,
+    appearance,
+    race, 
+    subrace,
+    type,
+    experiencePoints,
+    languages,
+    proficiencies,
+    skills,
+    spells,
+    class: clas,
+    equipment,
+    money
+  } = character
+
+  const data = {
+    playerName,
+    name,
+    level,
+    experiencePoints,
+    race,
+    subrace,
+    type,
+    appearance,
+    languages,
+    proficiencies,
+    skills,
+    spells,
+    class: clas,
+    equipment,
+    money: parseInt(money) ?? 0
+  }
+
   const url = 'http://localhost:3000/crearFicha';
 
   const config = {
@@ -69,7 +105,7 @@ export async function rellenarFicha(character) {
   };
 
   try {
-    const response = await axios.post(url, character, config);
+    const response = await axios.post(url, data, config);
     return response.data; 
   } catch (error) {
     return error.response.data; 
