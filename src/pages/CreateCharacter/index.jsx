@@ -9,13 +9,13 @@ import Wizard from './Wizard'
 import StepClases from '../CreatePj/StepClases'
 
 export default function CreateCharacter() {
-  const [step, setStep] = useState(2)
+  const [step, setStep] = useState(0)
 
   const { character, addData } = useCreatePj()
 
   const cambiarStep = (data) => {
     addData(data)
-    setStep(step+1)
+    //setStep(step+1)
   }
 
   const anteriorStep = () => {
@@ -45,7 +45,6 @@ export default function CreateCharacter() {
               FICHA
             </Button>
           </div>
-          <div>4</div>
         </CardBody>
       </Card>
     </div>

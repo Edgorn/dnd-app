@@ -36,6 +36,9 @@ import wizard from '../../data/imagenes/wizard.jpg'
 import monk from '../../data/imagenes/monk.jpg'
 import paladin from '../../data/imagenes/paladin.jpg'
 import rogue from '../../data/imagenes/rogue.jpg'
+import fairyLord from '../../data/imagenes/fairy-lord.jpg'
+import infernal from '../../data/imagenes/infernal.jpg'
+import primal from '../../data/imagenes/primal.jpg'
 
 export default function Imagen({ index }) {
 
@@ -81,7 +84,10 @@ export default function Imagen({ index }) {
     wizard: wizard,
     monk: monk,
     paladin: paladin,
-    rogue: rogue
+    rogue: rogue,
+    "fairy-lord": fairyLord,
+    infernal: infernal,
+    primal: primal
   }
 
   return <img src={imagenes[index]} alt={index} />
