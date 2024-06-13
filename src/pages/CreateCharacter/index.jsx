@@ -6,10 +6,10 @@ import { rellenarFicha } from '../../services/services'
 import { useState } from 'react'
 import StepAspecto from '../CreatePj/StepAspecto'
 import Wizard from './Wizard'
-import StepClases from '../CreatePj/StepClases'
+import StepClase from '../CreatePj/StepClase'
 
 export default function CreateCharacter() {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(2)
 
   const { character, addData } = useCreatePj()
 
@@ -38,7 +38,7 @@ export default function CreateCharacter() {
           <div className='form-wizard-content'>
             { step === 0 && <StepRaza character={character} cambiarStep={cambiarStep} /> }
             { step === 1 && <StepAspecto character={character} cambiarStep={cambiarStep} anteriorStep={anteriorStep} /> }
-            { step === 2 && <StepClases character={character} cambiarStep={cambiarStep} anteriorStep={anteriorStep} /> }
+            { step === 2 && <StepClase character={character} cambiarStep={cambiarStep} anteriorStep={anteriorStep} /> }
           </div>
           <div>
             <Button onClick={crearPersonaje}>

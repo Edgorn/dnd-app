@@ -73,6 +73,7 @@ export async function rellenarFicha(character) {
     skills,
     spells,
     class: clas,
+    subclass,
     equipment,
     money
   } = character
@@ -91,6 +92,7 @@ export async function rellenarFicha(character) {
     skills,
     spells,
     class: clas,
+    subclass,
     equipment,
     ability_scores: {
       str: 10,

@@ -7,7 +7,7 @@ import TextoPuntosGolpe from "../../components/form/TextoPuntosGolpe";
 import MultiSelect from "../../components/form/MultiSelect";
 import InputText from "../../components/form/Input";
 
-export default function StepClases({ character, cambiarStep, anteriorStep, nombreCompetencia }) {
+export default function StepClase({ character, cambiarStep, anteriorStep, nombreCompetencia }) {
   const [clase, setClase] = useState([])
   const [clases, setClases] = useState([])
   const [optionsClase, setOptionsClase] = useState([])
@@ -35,6 +35,7 @@ export default function StepClases({ character, cambiarStep, anteriorStep, nombr
     setOptionsEquipmentSelect(clase?.equipment_options?.map(() => 0))
     setOptionsConjuros(clase?.spellcasting_options?.map(() => []))
     setPack('')
+    setSubclass(clase?.subclases_options ? (clase?.subclases_options[0]?.options[0] ?? null) : null)
   }, [clase])
 
   const seleccionarClase = (nombre) => {
@@ -70,7 +71,7 @@ export default function StepClases({ character, cambiarStep, anteriorStep, nombr
     let money = formData.get('money');
 
     const equipment = clase.equipment.map(eq => { return { index: eq.index, quantity: eq.quantity } })
-    const spells = []
+    const spells = subclass?.spells?.map(spell => spell.index) ?? []
 
     const proficiencies = [
       ...clase?.proficiencies?.filter(prof => prof.type !== 'habilidad').map(prof => prof.index) ?? []
@@ -90,11 +91,9 @@ export default function StepClases({ character, cambiarStep, anteriorStep, nombr
 
     clase?.equipment_options?.forEach((option, index) => {
       const opcionSeleccionada = option[optionsEquipmentSelect[index]]
-      console.log(opcionSeleccionada)
       if (opcionSeleccionada?.items) {
         equipment.push(...opcionSeleccionada?.items ?? [])
       } else {
-        console.log(opcionSeleccionada)
         const values = optionsEquipment[index]?.map(opt => opt.value) ?? []
         equipment.push(...values)
       }
@@ -113,6 +112,7 @@ export default function StepClases({ character, cambiarStep, anteriorStep, nombr
 
     cambiarStep({
       class: clase.index,
+      subclass: subclass?.index ?? '',
       classData: {
         proficiencies,
         skills,
@@ -265,30 +265,6 @@ export default function StepClases({ character, cambiarStep, anteriorStep, nombr
             })
           }
           
-          {/*
-            clase?.equipment_options?.map((proficiency_options, index) => {
-              return (
-                <MultiSelect 
-                  index={index}
-                  label={proficiency_options?.type ?? ''}
-                  options={proficiency_options.options.map(opt => { 
-                    return { 
-                      index: { index: opt.index, quantity: opt.quantity }, 
-                      name: opt.name.map((name, index) => {
-                        return opt.quantity[index] + 'x ' + name 
-                      })
-                      .join(' - ')
-                    } 
-                  })}
-                  selectedOptions={optionsEquipment}
-                  setOptions={setOptionsEquipment}
-                  max={proficiency_options?.choose}
-                  disabled={disableds}
-                />
-              )
-            })
-          */}
-          
           <ButtonGroup>
             {
               clase?.money?.map(opt => (
@@ -336,22 +312,35 @@ export default function StepClases({ character, cambiarStep, anteriorStep, nombr
                   </Col>
                 ))}
               </>
-              /*
-
-              <Col md={12} lg={4} className="race-col">
-                <div className={'race-option ' + (subclass?.index===subclase.index ? 'selected' : '')} onClick={() => seleccionarSubclase(subclase)}>
-                  <Imagen index={subclase?.index} />
-                  <span>{subclase?.name}</span>
-                </div>
-              </Col>*/
             ))}
           </Row>
         </Col>
         <Col>
           <h3>{subclass?.name ?? ''}</h3>
-          <p style={{whiteSpace: 'pre-line'}}>
-            {subclass?.desc ?? ''}
-            </p>
+          <ul>
+            {
+              subclass?.traits?.map(trait => {
+                return (
+                  <li style={{textAlign: 'justify'}}>
+                    <b>{trait.name}: </b>
+                    <RenderDescription desc={trait.desc} />
+                  </li>
+                )
+              })
+            }
+          </ul>
+          
+            {subclass?.spells.length > 0
+            &&
+            <>
+              <h4>Conjuros</h4>
+              <ul>
+                {subclass?.spells?.map(spell => (
+                  <li>{spell.name}</li>
+                ))}
+              </ul>
+            </>
+          }
         </Col>
       </Row>
       <Button color='primary' type="submit">

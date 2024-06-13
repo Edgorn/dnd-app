@@ -4,6 +4,7 @@ import { getRazas } from "../../services/services";
 import TextoCompetencias from "../../components/form/TextoCompetencias";
 import Imagen from "../../components/Imagen";
 import MultiSelect from "../../components/form/MultiSelect";
+import Slider from "react-slick";
 
 export default function StepRaza({ character, cambiarStep, anteriorStep }) {
   const [razas, setRazas] = useState([])
@@ -12,6 +13,7 @@ export default function StepRaza({ character, cambiarStep, anteriorStep }) {
   const [type, setType] = useState(null)
   const [optionsRace, setOptionsRace] = useState([])
   const [optionsSubrace, setOptionsSubrace] = useState([])
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     getRazas().then(response => {
@@ -36,7 +38,7 @@ export default function StepRaza({ character, cambiarStep, anteriorStep }) {
   }, [subrace])
 
   const seleccionarRaza = (index) => {
-    setRace(razas?.find(r => r.index === index))
+    setRace(razas[index])
   }
 
   const seleccionarSubraza = (index) => {
@@ -87,10 +89,11 @@ export default function StepRaza({ character, cambiarStep, anteriorStep }) {
         skills.push(...values)
       } else if (option.type === 'idioma') {
         languages.push(...values)
-      } else if (option.type.split('_')[0] === 'conjuro') {
-        spells.push(...values.map(value => { 
+      } else if (option.type === 'conjuro' || option.type === 'truco') {
+        spells.push(...values.map(value => {
+          const type = option.options.find(opt => opt.index === value)?.type ?? null
           return {
-            index: value, type: option.type.split('_')[1]
+            index: value, type: type
           }
         }))
       } else {
@@ -113,10 +116,11 @@ export default function StepRaza({ character, cambiarStep, anteriorStep }) {
         skills.push(...values)
       } else if (option.type === 'idioma') {
         languages.push(...values)
-      } else if (option.type.split('_')[0] === 'conjuro') {
-        spells.push(...values.map(value => { 
+      } else if (option.type === 'conjuro' || option.type === 'truco') {
+        spells.push(...values.map(value => {
+          const type = option.options.find(opt => opt.index === value)?.type ?? null
           return {
-            index: value, type: option.type.split('_')[1]
+            index: value, type: type
           }
         }))
       } else {
@@ -138,21 +142,33 @@ export default function StepRaza({ character, cambiarStep, anteriorStep }) {
     })
   }
 
+  const settingsRaza = {
+    dots: true, // Mostrar indicadores
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3, // Muestra tres imágenes por vez
+    slidesToScroll: 1,
+    centerMode: true, // Centra la imagen seleccionada
+    centerPadding: '0',
+    beforeChange: (current, next) => seleccionarRaza(next),
+    arrows: true // Mostrar flechas de navegación
+  };
+
   return (
     <Form onSubmit={handleSubmit}>
-      <Row>
-        <Col>
-          <Row>
-            {razas?.map(raza => (
-              <Col md={12} lg={4} className="race-col">
-                <div className={'race-option ' + (race.index===raza.index ? 'selected' : '')} onClick={() => seleccionarRaza(raza.index)}>
-                  <Imagen index={raza.index} />
-                  <span>{raza.name}</span>
-                </div>
-              </Col>
-            ))}
-          </Row>
-        </Col>
+      <div className="slider-container">
+        <Slider {...settingsRaza}>
+          {razas?.map((raza, index) => (
+            <div key={index}>
+              <div className={`race-option ${race.index===raza.index ? 'selected' : ''}`}>
+                <Imagen index={raza.index} />
+                <span>{raza.name}</span>
+              </div>
+            </div>
+          ))}
+        </Slider>
+      </div>
+      <Row style={{marginTop: '2em'}}>
         <Col>
           <h3>{race?.name ?? ''}</h3>
           <p style={{textAlign: 'justify'}}>{race?.desc ?? ''}</p>
@@ -183,7 +199,8 @@ export default function StepRaza({ character, cambiarStep, anteriorStep }) {
               })
             }
           </ul>
-
+        </Col>
+        <Col>
           {
             race?.options?.map((proficiency_options, index) => {
               return (
@@ -203,7 +220,7 @@ export default function StepRaza({ character, cambiarStep, anteriorStep }) {
       </Row>
 
       <div className="divider"></div>
-
+  
       <Row>
         <Col>
           <Row>
@@ -283,85 +300,6 @@ export default function StepRaza({ character, cambiarStep, anteriorStep }) {
           <p style={{textAlign: 'justify'}}>{type?.desc ?? ''}</p>
         </Col>
       </Row>
-      {/*}
-
-      <ul>
-        {
-          raza?.ability_bonuses
-          &&
-          <li>{'Bonus caracteristicas: ' + raza?.ability_bonuses?.map(bonus => '+' + bonus.bonus + ' ' + nombreCompetencia(bonus.index, 'caracteristica')).join(', ')}</li>
-        }
-        
-        <li>{'Idiomas: ' +  raza?.languages?.map(language => nombreCompetencia(language, 'idioma')).join(', ') } </li>
-
-        <TextoCompetencias competencias={raza?.starting_proficiencies} nombreCompetencia={nombreCompetencia} />
-
-      </ul>
-
-      {
-        raza?.options?.map((proficiency_options, index) =>
-          <RadioGroup
-            key={index}
-            datos={proficiency_options}
-            nombreCompetencia={nombreCompetencia}
-            disableds={raza?.starting_proficiencies?.map(prof => prof.index) ?? []} />
-        )
-      }
-
-      <Select 
-        id='subrace' 
-        label='Subraza' 
-        options={raza?.subraces ?? []} 
-        value={subraza?.index ?? ''} 
-        onChange={seleccionarSubraza} 
-        hidden={raza?.subraces?.length === 0} />
-
-      <p style={{textAlign: 'justify'}}>{subraza?.desc ?? ''}</p>
-
-      <Select 
-        id='type' 
-        label='Tipo' 
-        options={subraza?.types ?? []} 
-        value={tipo?.name ?? ''} 
-        onChange={seleccionarTipo} 
-        hidden={!subraza?.types | subraza?.types?.length === 0} />
-
-      <p style={{textAlign: 'justify'}}>{tipo?.desc ?? ''}</p>
-      
-      <ul>
-        {
-          subraza?.ability_bonuses?.length > 0
-          &&
-          <li>{'Bonus caracteristicas: ' + subraza?.ability_bonuses?.map(bonus => '+' + bonus.bonus + ' ' + nombreCompetencia(bonus.index, 'caracteristica')).join(', ')}</li>
-        }
-        
-        {
-          subraza?.spells
-          &&
-          <li>{'Conjuros: ' +  subraza?.spells?.map(spell => nombreCompetencia(spell, 'conjuro')).join(', ') }</li>
-        }
-        
-        <TextoCompetencias competencias={subraza?.starting_proficiencies} nombreCompetencia={nombreCompetencia} />
-      </ul>
-
-      {
-        subraza?.options?.map((proficiency_options, index) =>
-          <RadioGroup
-            key={index}
-            datos={proficiency_options}
-            nombreCompetencia={nombreCompetencia}
-            disableds={[]} />
-        )
-      }
-
-      <Button color='secondary' onClick={anteriorStep}>
-        Anterior
-      </Button>
-      
-      <Button color='primary'>
-        Siguiente
-      </Button>
-    */}
     <Button color='primary'>
       Siguiente
     </Button>
