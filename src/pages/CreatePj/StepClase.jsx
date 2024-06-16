@@ -11,6 +11,7 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
   const [clase, setClase] = useState([])
   const [clases, setClases] = useState([])
   const [optionsClase, setOptionsClase] = useState([])
+  const [optionsSubclase, setOptionsSubclase] = useState([])
   const [optionsEquipment, setOptionsEquipment] = useState([])
   const [optionsEquipmentSelect, setOptionsEquipmentSelect] = useState([])
   const [optionsConjuros, setOptionsConjuros] = useState([])
@@ -37,6 +38,10 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
     setPack('')
     setSubclass(clase?.subclases_options ? (clase?.subclases_options[0]?.options[0] ?? null) : null)
   }, [clase])
+
+  useEffect(() => {
+    setOptionsSubclase(subclass?.options?.map(() => []))
+  }, [subclass])
 
   const seleccionarClase = (nombre) => {
     setClase(clases.find(r => r.index === nombre))
@@ -330,7 +335,7 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
             }
           </ul>
           
-            {subclass?.spells.length > 0
+          {subclass?.spells.length > 0
             &&
             <>
               <h4>Conjuros</h4>
@@ -340,6 +345,33 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
                 ))}
               </ul>
             </>
+          }
+
+          {subclass?.proficiencies.length > 0
+            &&
+            <>
+              <h4>Competencias</h4>
+              <ul>
+                <TextoCompetencias competencias={subclass?.proficiencies} />
+              </ul>
+            </>
+          }
+
+          {
+            subclass?.options?.map((proficiency_options, index) => {
+              return (
+                <MultiSelect 
+                  index={index}
+                  label={proficiency_options.type}
+                  options={proficiency_options.options}
+                  selectedOptions={optionsSubclase}
+                  setOptions={setOptionsSubclase}
+                  max={proficiency_options?.choose}
+                  disabled={disableds}
+                  competencias
+                />
+              )
+            })
           }
         </Col>
       </Row>

@@ -42,6 +42,7 @@ export default function Character({ character, habilidades }) {
     getCompetencias().then(response => {
       setCompetencias(response)
     })
+
   }, [])
 
   const pasiva = (caracteristica) => {

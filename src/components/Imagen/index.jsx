@@ -40,6 +40,14 @@ import fairyLord from '../../data/imagenes/fairy-lord.jpg'
 import infernal from '../../data/imagenes/infernal.jpg'
 import primal from '../../data/imagenes/primal.jpg'
 
+import knowledgeDomain from '../../data/imagenes/knowledge-domain.jpg'
+import deceptionDomain from '../../data/imagenes/deception-domain.jpg'
+import warDomain from '../../data/imagenes/war-domain.jpg'
+import lightDomain from '../../data/imagenes/light-domain.jpg'
+import natureDomain from '../../data/imagenes/nature-domain.jpg'
+import stormDomain from '../../data/imagenes/storm-domain.jpg'
+import lifeDomain from '../../data/imagenes/life-domain.jpg'
+
 export default function Imagen({ index }) {
 
   const imagenes = {
@@ -87,7 +95,14 @@ export default function Imagen({ index }) {
     rogue: rogue,
     "fairy-lord": fairyLord,
     infernal: infernal,
-    primal: primal
+    primal: primal,
+    "knowledge-domain": knowledgeDomain,
+    "deception-domain": deceptionDomain,
+    "war-domain": warDomain,
+    "light-domain": lightDomain,
+    "nature-domain": natureDomain,
+    "storm-domain": stormDomain,
+    "life-domain": lifeDomain
   }
 
   return <img src={imagenes[index]} alt={index} />
