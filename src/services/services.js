@@ -75,7 +75,9 @@ export async function rellenarFicha(character) {
     class: clas,
     subclass,
     equipment,
-    money
+    money,
+    dobleSkills,
+    terrain
   } = character
 
   const data = {
@@ -102,7 +104,9 @@ export async function rellenarFicha(character) {
       wis: 10,
       cha: 10
     },
-    money: parseInt(money) ?? 0
+    money: parseInt(money) ?? 0,
+    dobleSkills,
+    terrain
   }
 
   const url = 'http://localhost:3000/crearFicha';

@@ -14,7 +14,8 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
   const [optionsSubclase, setOptionsSubclase] = useState([])
   const [optionsEquipment, setOptionsEquipment] = useState([])
   const [optionsEquipmentSelect, setOptionsEquipmentSelect] = useState([])
-  const [optionsConjuros, setOptionsConjuros] = useState([])
+  const [optionsConjuros, setOptionsConjuros] = useState([[]])
+  const [optionsTerrain, setOptionsTerrain] = useState([])
   const [pack, setPack] = useState('')
   const [subclass, setSubclass] = useState(null)
 
@@ -37,6 +38,7 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
     setOptionsConjuros(clase?.spellcasting_options?.map(() => []))
     setPack('')
     setSubclass(clase?.subclases_options ? (clase?.subclases_options[0]?.options[0] ?? null) : null)
+    setOptionsTerrain([[]])
   }, [clase])
 
   useEffect(() => {
@@ -76,10 +78,16 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
     let money = formData.get('money');
 
     const equipment = clase.equipment.map(eq => { return { index: eq.index, quantity: eq.quantity } })
-    const spells = subclass?.spells?.map(spell => spell.index) ?? []
+    const spells = [
+      ...clase?.spells ?? [],
+      ...subclass?.spells?.map(spell => spell.index) ?? []
+    ]
+    const languages = []
+    const dobleSkills = []
 
     const proficiencies = [
-      ...clase?.proficiencies?.filter(prof => prof.type !== 'habilidad').map(prof => prof.index) ?? []
+      ...clase?.proficiencies?.filter(prof => prof.type !== 'habilidad').map(prof => prof.index) ?? [],
+      ...subclass?.proficiencies?.filter(prof => prof.type !== 'habilidad').map(prof => prof.index) ?? []
     ]
 
     const skills = [
@@ -91,7 +99,7 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
 
       if (option.type === 'habilidad') {
         skills.push(...values)
-      } 
+      }
     })
 
     clase?.equipment_options?.forEach((option, index) => {
@@ -115,16 +123,37 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
       equipment.push({ index: pack, quantity: 1 })
     }
 
+    subclass?.options?.forEach((option, index) => {
+      const values = optionsSubclase[index]?.map(opt => opt.value) ?? []
+
+      if (option.type === 'idioma') {
+        languages.push(...values)
+      } else if (option.type === 'habilidad (doble bonus)') {
+        dobleSkills.push(...values)
+      } else if (option.type === 'habilidad') {
+        skills.push(...values)
+      } else if (option.type === 'truco') {
+        spells.push(...values)
+      } else {
+        console.log(option)
+      }
+    })
+
+    console.log(optionsTerrain[0].map(opt => opt.value))
+
     cambiarStep({
       class: clase.index,
       subclass: subclass?.index ?? '',
       classData: {
+        languages,
         proficiencies,
         skills,
         spells,
         money
       },
-      equipment
+      equipment,
+      dobleSkills,
+      terrain: optionsTerrain[0]?.map(opt => opt.value) ?? []
     })
   }
 
@@ -187,6 +216,21 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
           }
 
           {
+            clase?.terrain_options?.options
+            &&
+            <MultiSelect 
+              index={0}
+              label='terreno predilecto'
+              options={clase?.terrain_options?.options ?? []}
+              selectedOptions={optionsTerrain}
+              setOptions={setOptionsTerrain}
+              max={clase?.terrain_options?.choose}
+              disabled={disableds}
+              competencias
+            />
+          }
+
+          {
             clase?.spellcasting_options?.length > 0
             &&
             <>
@@ -194,6 +238,14 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
               <h4>Conjuros</h4>
             </>
           }
+          <ul>
+            {
+              clase?.spells?.map(spell => (
+                <li>{spell.name}</li>
+              ))
+            }
+          </ul>
+          
           {
             clase?.spellcasting_options?.map((proficiency_options, index) => {
               return (

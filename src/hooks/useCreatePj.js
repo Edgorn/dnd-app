@@ -28,6 +28,7 @@ function useCreatePj() {
     },
     ability_bonuses: {},
     skills: [],
+    dobleSkills: [],
     languages: [],
     proficiencies: [],
     spells: [],

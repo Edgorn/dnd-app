@@ -27,17 +27,15 @@ export default function TextoCompetencias({competencias}) {
       }
 
       {
-        competencias?.filter(prof => prof.type === 'Herramientas de artesano')?.length > 0
+        competencias?.filter(prof => prof.type === 'Herramientas de artesano' || prof.type === 'Otros')?.length > 0
         &&
         <li>
-          <b>Competencias con herramientas: </b>{competencias?.filter(prof => prof.type === 'Herramientas de artesano')?.map(prof => prof.name).join(', ')}.
+          <b>Competencias con herramientas: </b>{competencias?.filter(prof => prof.type === 'Herramientas de artesano' || prof.type === 'Otros')?.map(prof => prof.name).join(', ')}.
         </li>
       }
 
-      
-
       {
-        competencias?.filter(prof => prof.type !== 'habilidad' && prof.type !== 'Armas' && prof.type !== 'Armaduras' && prof.type !== 'Herramientas de artesano')?.length > 0
+        competencias?.filter(prof => prof.type !== 'habilidad' && prof.type !== 'Armas' && prof.type !== 'Armaduras' && prof.type !== 'Herramientas de artesano' && prof.type !== 'Otros')?.length > 0
         &&
         <li>{'OTRO: ' +  competencias?.filter(prof => prof.type !== 'habilidad' && prof.type !== 'Armas' && prof.type !== 'Armaduras' && prof.type !== 'Herramientas de artesano')?.map(prof => prof.index).join(', ')}.</li>
       }
