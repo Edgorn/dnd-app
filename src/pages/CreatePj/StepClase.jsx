@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Col, Form, Row } from "reactstrap";
+import { Button, ButtonGroup, Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import { Fragment, useEffect, useState } from "react";
 import { getClases } from "../../services/services";
 import TextoCompetencias from "../../components/form/TextoCompetencias";
@@ -18,6 +18,8 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
   const [optionsTerrain, setOptionsTerrain] = useState([])
   const [pack, setPack] = useState('')
   const [subclass, setSubclass] = useState(null)
+  const [trait, setTrait] = useState(undefined)
+  const [optionsOptions, setOptionsOptions] = useState(0)
 
   const disableds = [
     ...character?.raceData?.skills?.map(skill => { return { index: skill } }) ?? []
@@ -39,6 +41,7 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
     setPack('')
     setSubclass(clase?.subclases_options ? (clase?.subclases_options[0]?.options[0] ?? null) : null)
     setOptionsTerrain([[]])
+    setTrait(clase?.traits_options?.options?.at(0))
   }, [clase])
 
   useEffect(() => {
@@ -82,7 +85,9 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
       ...clase?.spells ?? [],
       ...subclass?.spells?.map(spell => spell.index) ?? []
     ]
-    const languages = []
+    const languages = [
+      ...subclass?.languages?.map(language => language.index) ?? []
+    ]
     const dobleSkills = []
 
     const proficiencies = [
@@ -96,17 +101,22 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
 
     clase?.options?.forEach((option, index) => {
       const values = optionsClase[index]?.map(opt => opt.value) ?? []
-
+      
       if (option.type === 'habilidad') {
         skills.push(...values)
+      } else {
+        proficiencies.push(...values)
       }
     })
 
     clase?.equipment_options?.forEach((option, index) => {
       const opcionSeleccionada = option[optionsEquipmentSelect[index]]
+      
       if (opcionSeleccionada?.items) {
         equipment.push(...opcionSeleccionada?.items ?? [])
-      } else {
+      } 
+      
+      if (opcionSeleccionada?.options) {
         const values = optionsEquipment[index]?.map(opt => opt.value) ?? []
         equipment.push(...values)
       }
@@ -139,7 +149,7 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
       }
     })
 
-    console.log(optionsTerrain[0].map(opt => opt.value))
+    console.log(proficiencies)
 
     cambiarStep({
       class: clase.index,
@@ -153,9 +163,11 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
       },
       equipment,
       dobleSkills,
-      terrain: optionsTerrain[0]?.map(opt => opt.value) ?? []
+      terrain: optionsTerrain[0]?.map(opt => opt.value) ?? [],
+      trait: trait?.index ?? ''
     })
   }
+
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -188,7 +200,31 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
               })
             }
           </ul>
-          
+
+          {
+            clase?.traits_options
+            &&
+            <>
+              <FormGroup>
+                <Label for="exampleSelect">
+                  {clase?.traits_options?.name}
+                </Label>
+                <Input
+                  id="exampleSelect"
+                  name="select"
+                  type="select"
+                >
+                  {clase?.traits_options?.options.map(opt => (
+                    <option onClick={() => setTrait(opt)}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </Input>
+              </FormGroup>
+              <p>{trait?.desc}</p>
+            </>
+          }
+
           <TextoPuntosGolpe hit_die={clase.hit_die} name={clase.name} />
 
           <h4>Competencias</h4>
@@ -200,18 +236,55 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
           </ul>
           {
             clase?.options?.map((proficiency_options, index) => {
-              return (
-                <MultiSelect 
-                  index={index}
-                  label={proficiency_options.type}
-                  options={proficiency_options.options}
-                  selectedOptions={optionsClase}
-                  setOptions={setOptionsClase}
-                  max={proficiency_options?.choose}
-                  disabled={disableds}
-                  competencias
-                />
-              )
+              if (proficiency_options?.type === 'choice') {
+                return (
+                  <>
+                    <br/>
+                    <p>Elige en que quieres tener competencia:</p>
+                    <ButtonGroup>
+                      {
+                        proficiency_options.options.map(((options, index2) => {
+                          return (
+                            <Button
+                              color="primary"
+                              onClick={() => setOptionsOptions(index2)}
+                              style={optionsOptions === index2 ? {backgroundColor: '#0a58ca'} : {}}
+                            >
+                              {options?.type?.toUpperCase()}
+                            </Button>
+                          )
+                        }))
+                      }
+                    </ButtonGroup>
+                    <br/>
+                    <MultiSelect 
+                      index={index}
+                      label={proficiency_options.options[optionsOptions].type}
+                      options={proficiency_options.options[optionsOptions].options}
+                      selectedOptions={optionsClase}
+                      setOptions={setOptionsClase}
+                      max={proficiency_options.options[optionsOptions]?.choose}
+                      disabled={disableds}
+                      competencias
+                    />
+                  </>
+                )
+              } else {
+                return (
+                  <MultiSelect 
+                    index={index}
+                    label={proficiency_options.type}
+                    options={proficiency_options.options}
+                    selectedOptions={optionsClase}
+                    setOptions={setOptionsClase}
+                    max={proficiency_options?.choose}
+                    disabled={disableds}
+                    competencias
+                  />
+                )
+              }
+              
+              
             })
           }
 
@@ -300,11 +373,11 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
                     <>
                       <MultiSelect 
                         index={index}
-                        label={proficiency_options[select]?.name ?? ''}
+                        label={proficiency_options[select]?.name.split(' - ')[1] ?? proficiency_options[select]?.name ?? ''}
                         options={proficiency_options[select]?.options.map(opt => { 
                           return { 
-                            index: { index: opt.index, quantity: opt.quantity }, 
-                            name: opt.quantity + 'x ' + opt.name
+                            index: { index: opt.index, quantity: 1 }, 
+                            name: opt.name
                           } 
                         })}
                         selectedOptions={optionsEquipment}
@@ -374,6 +447,29 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
         </Col>
         <Col>
           <h3>{subclass?.name ?? ''}</h3>
+          {
+            subclass?.traits_options
+            &&
+            <>
+              <FormGroup>
+                <Label for="exampleSelect">
+                  {subclass?.traits_options?.name}
+                </Label>
+                <Input
+                  id="exampleSelect"
+                  name="select"
+                  type="select"
+                >
+                  {subclass?.traits_options?.options.map(opt => (
+                    <option onClick={() => setTrait(opt)}>
+                      {opt.name}
+                    </option>
+                  ))}
+                </Input>
+              </FormGroup>
+              <p>{trait?.desc}</p>
+            </>
+          }
           <ul>
             {
               subclass?.traits?.map(trait => {
@@ -385,8 +481,13 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
                 )
               })
             }
+            {
+              subclass?.languages?.length > 0
+              &&
+              <li><b>Idiomas: </b> {subclass?.languages?.map(language => language.name).join(', ')}.</li>
+            }
           </ul>
-          
+
           {subclass?.spells.length > 0
             &&
             <>

@@ -48,6 +48,9 @@ import natureDomain from '../../data/imagenes/nature-domain.jpg'
 import stormDomain from '../../data/imagenes/storm-domain.jpg'
 import lifeDomain from '../../data/imagenes/life-domain.jpg'
 
+import draconicBloodline from '../../data/imagenes/draconic-bloodline.jpg'
+import wildMagic from '../../data/imagenes/wild-magic.jpg'
+
 export default function Imagen({ index }) {
 
   const imagenes = {
@@ -102,7 +105,9 @@ export default function Imagen({ index }) {
     "light-domain": lightDomain,
     "nature-domain": natureDomain,
     "storm-domain": stormDomain,
-    "life-domain": lifeDomain
+    "life-domain": lifeDomain,
+    "draconic-bloodline": draconicBloodline,
+    "wild-magic": wildMagic
   }
 
   return <img src={imagenes[index]} alt={index} />
