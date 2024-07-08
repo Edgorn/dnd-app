@@ -1,6 +1,6 @@
 export default function Wizard({ step }) {
 
-  const steps = ['Razas', 'Aspecto', 'Clases']
+  const steps = ['Razas', 'Aspecto', 'Clases', 'Transfondos']
 
   return (
     <ol className='forms-wizard'>

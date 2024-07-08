@@ -7,9 +7,10 @@ import { useState } from 'react'
 import StepAspecto from '../CreatePj/StepAspecto'
 import Wizard from './Wizard'
 import StepClase from '../CreatePj/StepClase'
+import StepTransfondo from '../CreatePj/StepTransfondo'
 
 export default function CreateCharacter() {
-  const [step, setStep] = useState(2)
+  const [step, setStep] = useState(3)
 
   const { character, addData } = useCreatePj()
 
@@ -39,6 +40,7 @@ export default function CreateCharacter() {
             { step === 0 && <StepRaza character={character} cambiarStep={cambiarStep} /> }
             { step === 1 && <StepAspecto character={character} cambiarStep={cambiarStep} anteriorStep={anteriorStep} /> }
             { step === 2 && <StepClase character={character} cambiarStep={cambiarStep} anteriorStep={anteriorStep} /> }
+            { step === 3 && <StepTransfondo character={character} cambiarStep={cambiarStep} anteriorStep={anteriorStep} /> }
           </div>
           <div>
             <Button onClick={crearPersonaje}>

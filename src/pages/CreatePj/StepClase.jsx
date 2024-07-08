@@ -15,11 +15,14 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
   const [optionsEquipment, setOptionsEquipment] = useState([])
   const [optionsEquipmentSelect, setOptionsEquipmentSelect] = useState([])
   const [optionsConjuros, setOptionsConjuros] = useState([[]])
-  const [optionsTerrain, setOptionsTerrain] = useState([])
+  const [optionsTerrain, setOptionsTerrain] = useState([[]])
+  const [typeEnemy, setTypeEnemy] = useState(0)
+  const [optionsEnemy, setOptionsEnemy] = useState([[]])
   const [pack, setPack] = useState('')
   const [subclass, setSubclass] = useState(null)
   const [trait, setTrait] = useState(undefined)
   const [optionsOptions, setOptionsOptions] = useState(0)
+  const [rogue, setRogue] = useState([[]])
 
   const disableds = [
     ...character?.raceData?.skills?.map(skill => { return { index: skill } }) ?? []
@@ -32,7 +35,6 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
     })
   }, [character.class])
 
-  
   useEffect(() => {
     setOptionsClase(clase?.options?.map(() => []))
     setOptionsEquipment(clase?.equipment_options?.map(() => []))
@@ -88,7 +90,8 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
     const languages = [
       ...subclass?.languages?.map(language => language.index) ?? []
     ]
-    const dobleSkills = []
+    
+    const dobleSkills = rogue[0]?.map(opt => opt.value) ?? []
 
     const proficiencies = [
       ...clase?.proficiencies?.filter(prof => prof.type !== 'habilidad').map(prof => prof.index) ?? [],
@@ -149,8 +152,6 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
       }
     })
 
-    console.log(proficiencies)
-
     cambiarStep({
       class: clase.index,
       subclass: subclass?.index ?? '',
@@ -164,10 +165,10 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
       equipment,
       dobleSkills,
       terrain: optionsTerrain[0]?.map(opt => opt.value) ?? [],
+      enemy: optionsEnemy[0]?.map(opt => opt.value) ?? [],
       trait: trait?.index ?? ''
     })
   }
-
 
   return (
     <Form onSubmit={handleSubmit}>
@@ -190,14 +191,16 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
 
           <ul>
             {
-              clase?.traits?.map(trait => {
-                return (
-                  <li style={{textAlign: 'justify'}}>
-                    <b>{trait.name}: </b>
-                    <RenderDescription desc={trait.desc} />
-                  </li>
-                )
-              })
+              clase?.traits
+                ?.filter(trait => trait.index !== 'rogue-expertise')
+                ?.map(trait => {
+                  return (
+                    <li style={{textAlign: 'justify'}}>
+                      <b>{trait.name}: </b>
+                      <RenderDescription desc={trait.desc} />
+                    </li>
+                  )
+                })
             }
           </ul>
 
@@ -283,8 +286,6 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
                   />
                 )
               }
-              
-              
             })
           }
 
@@ -299,8 +300,55 @@ export default function StepClase({ character, cambiarStep, anteriorStep, nombre
               setOptions={setOptionsTerrain}
               max={clase?.terrain_options?.choose}
               disabled={disableds}
-              competencias
             />
+          }
+
+          {
+            clase?.enemy_options?.length > 0
+            &&
+            <>
+              <br/>
+              <ButtonGroup>
+                {
+                  clase?.enemy_options?.map(((options, index) => {
+                    return (
+                      <Button
+                        color="primary"
+                        onClick={() => { setTypeEnemy(index); setOptionsEnemy([]) }}
+                        style={typeEnemy===index ? {backgroundColor: '#0a58ca'} : {}}
+                      >
+                        {options.name}
+                      </Button>
+                    )
+                  }))
+                }
+              </ButtonGroup>
+              <br/>
+
+              <MultiSelect 
+                index={0}
+                label={clase?.enemy_options[typeEnemy]?.name ?? ''}
+                options={clase?.enemy_options[typeEnemy]?.options ?? []}
+                selectedOptions={optionsEnemy}
+                setOptions={setOptionsEnemy}
+                max={clase?.enemy_options[typeEnemy]?.choose}
+                disabled={disableds}
+              />
+            </>
+          }
+
+          {
+            clase?.traits?.find(trait => trait.index === 'rogue-expertise')
+            &&
+            <MultiSelect 
+              index={0}
+              label='habilidad (doble bonus)'
+              options={optionsClase[0].map(opt => { return { index: opt.value, name: opt.label } }) ?? []}
+              selectedOptions={rogue}
+              setOptions={setRogue}
+              max={2}
+              disabled={disableds}
+              competencias />
           }
 
           {

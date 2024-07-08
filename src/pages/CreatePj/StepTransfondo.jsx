@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { getTransfondos } from "../../services/services";
 import RadioGroup from "../../components/form/RadioGroup";
 import TextoCompetencias from "../../components/form/TextoCompetencias";
+import Input from "../../components/form/Input";
+import { alineamientos } from "../../data/data";
 
-export default function Step4({ character, cambiarStep, anteriorStep, nombreCompetencia }) {
+export default function StepTransfondo({ character, cambiarStep, anteriorStep, nombreCompetencia }) {
   
   const [transfondos, setTransfondos] = useState([])
   const [transfondo, setTransfondo] = useState([])
@@ -75,6 +77,19 @@ export default function Step4({ character, cambiarStep, anteriorStep, nombreComp
 
   return (
     <Form onSubmit={handleSubmit}>
+      <Input
+        id='name'
+        label='Nombre del personaje'
+        defaultValue={character?.name ?? ''}
+        onChange={() => {}} />
+
+      <Select
+        id='alignment' 
+        label='Alineamiento' 
+        options={alineamientos} 
+        defaultValue={character?.alignment ?? ''} 
+        onChange={() => {}} />
+
       <Select
         id='background' 
         label='Transfondo' 
