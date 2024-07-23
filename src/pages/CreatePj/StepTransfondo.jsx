@@ -6,11 +6,14 @@ import RadioGroup from "../../components/form/RadioGroup";
 import TextoCompetencias from "../../components/form/TextoCompetencias";
 import Input from "../../components/form/Input";
 import { alineamientos } from "../../data/data";
+import MultiSelect from "../../components/form/MultiSelect";
 
 export default function StepTransfondo({ character, cambiarStep, anteriorStep, nombreCompetencia }) {
   
   const [transfondos, setTransfondos] = useState([])
   const [transfondo, setTransfondo] = useState([])
+  const [optionsOptions, setOptionsOptions] = useState(0)
+  const [optionsTransfondo, setOptionsTransfondo] = useState([])
 
   const disableds = [
     ...character?.raceData?.skills ?? [],
@@ -99,16 +102,20 @@ export default function StepTransfondo({ character, cambiarStep, anteriorStep, n
         nullable />
 
       <ul>
-        <TextoCompetencias competencias={transfondo?.starting_proficiencies} nombreCompetencia={nombreCompetencia} />
+        <TextoCompetencias competencias={transfondo?.proficiencies} />
       </ul>
 
       {
         transfondo?.options?.map((options, index) =>
-          <RadioGroup
-            key={index}
-            datos={options}
-            nombreCompetencia={nombreCompetencia}
-            disableds={disableds} />
+          <MultiSelect 
+            index={index}
+            label={options.type}
+            options={options.options}
+            selectedOptions={optionsTransfondo}
+            setOptions={setOptionsTransfondo}
+            max={options?.choose}
+            disabled={disableds}
+            competencias />
         )
       }
 
